@@ -22,17 +22,21 @@ public class Board {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String content;
-
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(nullable = false)
+    private String content;
+
+    private LocalDateTime regDate;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<Comment> comments;
+
     @PrePersist
     protected void prePersist() {
-        LocalDateTime createdDate = LocalDateTime.now();
+        regDate = LocalDateTime.now();
     }
 }

@@ -22,17 +22,18 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime regDate;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
     @ManyToOne
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @PrePersist
     protected void prePersist() {
-        createdDate = LocalDateTime.now();
+        regDate = LocalDateTime.now();
     }
 }
