@@ -4,6 +4,8 @@ import com.pang2oppa.AnonBoard.dto.BoardDto;
 import com.pang2oppa.AnonBoard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,23 @@ public class BoardController {
     public ResponseEntity<List<BoardDto>> boardList() {
         List<BoardDto> list = boardService.getBoardList();
         return ResponseEntity.ok(list);
+    }
+
+    // 게시글 페이지 조회
+    @GetMapping("/list/page")
+    public ResponseEntity<List<BoardDto>> boardListByPage(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size) {
+        List<BoardDto> list = boardService.getBoardListByPage(page, size);
+        log.info("list : {}", list);
+        return ResponseEntity.ok(list);
+    }
+
+    // 전체 페이지 조회
+    @GetMapping("/list/pages")
+    public ResponseEntity<Integer> getTotalPages(@RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(0, size);
+        int totalPages = boardService.getBoardPage(pageable);
+        return ResponseEntity.ok(totalPages);
     }
 
     // 나의 게시글 조회

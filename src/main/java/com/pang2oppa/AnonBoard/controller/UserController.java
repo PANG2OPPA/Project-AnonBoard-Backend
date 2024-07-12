@@ -63,4 +63,13 @@ public class UserController {
         List<UserDto> list = userService.getUserList();
         return ResponseEntity.ok(list);
     }
+
+
+    // 중복 확인
+    @GetMapping("/exists/{userId}")
+    public ResponseEntity<Boolean> memberExists(@PathVariable String userId) {
+        log.info("userId: {}", userId);
+        boolean isTrue = userService.isUser(userId);
+        return ResponseEntity.ok(!isTrue);
+    }
 }

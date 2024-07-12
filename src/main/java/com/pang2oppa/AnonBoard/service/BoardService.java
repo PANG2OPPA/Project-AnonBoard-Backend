@@ -1,7 +1,6 @@
 package com.pang2oppa.AnonBoard.service;
 
 import com.pang2oppa.AnonBoard.dto.BoardDto;
-import com.pang2oppa.AnonBoard.dto.UserDto;
 import com.pang2oppa.AnonBoard.entity.Board;
 import com.pang2oppa.AnonBoard.entity.User;
 import com.pang2oppa.AnonBoard.repository.BoardRepository;
@@ -9,6 +8,10 @@ import com.pang2oppa.AnonBoard.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +34,24 @@ public class BoardService {
             boardDtos.add(convertEntityToDto(board));
         }
         return boardDtos;
+    }
+
+    // 게시글 페이지 조회
+    public List<BoardDto> getBoardListByPage(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "regDate"));
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+        List<Board> boards = boardPage.getContent();
+        List<BoardDto> boardDtos = new ArrayList<>();
+        for (Board board : boards) {
+            boardDtos.add(convertEntityToDto(board));
+        }
+        return boardDtos;
+    }
+
+    // 전체 페이지 조회
+    public int getBoardPage(Pageable pageable) {
+        Page<Board> boardPage = boardRepository.findAll(pageable);
+        return boardPage.getTotalPages();
     }
 
     // 나의 게시글 조회
@@ -99,13 +120,12 @@ public class BoardService {
     }
 
     private BoardDto convertEntityToDto(Board board) {
-        BoardDto boardDto = new BoardDto();
-        boardDto.setId(board.getId());
-        boardDto.setTitle(board.getTitle());
-        boardDto.setUser(board.getUser().getUserId());
-        boardDto.setContent(board.getContent());
-        boardDto.setRegDate(board.getRegDate());
-        return boardDto;
+        return BoardDto.builder()
+                .id(board.getId())
+                .title(board.getTitle())
+                .user(board.getUser().getUserId())
+                .content(board.getContent())
+                .regDate(board.getRegDate())
+                .build();
     }
-
 }

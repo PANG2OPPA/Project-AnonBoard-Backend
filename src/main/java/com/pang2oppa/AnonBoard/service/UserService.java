@@ -63,6 +63,10 @@ public class UserService {
         return userDtos;
     }
 
+    public boolean isUser(String userId) {
+        return userRepository.existsByUserId(userId);
+    }
+
     private UserDto convertEntityToDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setId(user.getId());
