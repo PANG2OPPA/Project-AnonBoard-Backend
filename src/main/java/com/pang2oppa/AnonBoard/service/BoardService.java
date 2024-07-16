@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -55,8 +56,10 @@ public class BoardService {
     }
 
     // 나의 게시글 조회
-    public List<BoardDto> getBoardsByUserId(Long userId) {
-        List<Board> boards = boardRepository.findByUserId(userId);
+    public List<BoardDto> getBoardsByUserId(String userId) {
+        Optional<User> userOptional = userRepository.findByUserId(userId);
+        User user = userOptional.get();
+        List<Board> boards = boardRepository.findByUser(user);
         List<BoardDto> boardDtos = new ArrayList<>();
         for (Board board : boards) {
             boardDtos.add(convertEntityToDto(board));

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -29,11 +30,10 @@ public class CommentService {
     // 댓글 조회
     public List<CommentDto> getCommentsByBoardId(Long boardId) {
         List<Comment> comments = commentRepository.findByBoardId(boardId);
-        List<CommentDto> commentDtos = new ArrayList<>();
-        for (Comment comment : comments) {
-            commentDtos.add(convertEntityToDto(comment));
-        }
-        return commentDtos;
+        comments.sort((c1, c2) -> c2.getRegDate().compareTo(c1.getRegDate())); // 최신순으로 정렬
+        return comments.stream()
+                .map(this::convertEntityToDto)
+                .collect(Collectors.toList());
     }
 
     // 댓글 작성

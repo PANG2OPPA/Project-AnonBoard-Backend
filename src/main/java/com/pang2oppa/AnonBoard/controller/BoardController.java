@@ -1,6 +1,7 @@
 package com.pang2oppa.AnonBoard.controller;
 
 import com.pang2oppa.AnonBoard.dto.BoardDto;
+import com.pang2oppa.AnonBoard.entity.User;
 import com.pang2oppa.AnonBoard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,7 +45,7 @@ public class BoardController {
 
     // 나의 게시글 조회
     @GetMapping("/list/{userId}")
-    public ResponseEntity<List<BoardDto>> BoardByUserId(@PathVariable Long userId){
+    public ResponseEntity<List<BoardDto>> BoardByUserId(@PathVariable String userId){
         List<BoardDto> list = boardService.getBoardsByUserId(userId);
         return ResponseEntity.ok(list);
     }
