@@ -42,6 +42,11 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
+	implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
+	implementation 'com.auth0:java-jwt:4.0.0'
+
 }
 
 tasks.named('test') {

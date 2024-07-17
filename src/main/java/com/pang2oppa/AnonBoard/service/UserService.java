@@ -6,6 +6,8 @@ import com.pang2oppa.AnonBoard.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,14 +20,21 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 회원가입
     public String signup(UserDto requestDto) {
         if (userRepository.existsByUserId(requestDto.getUserId())) {
             throw new RuntimeException("이미 가입되어 있는 유저입니다");
         }
+        // 비밀번호 암호화
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        requestDto.setPassword(encodedPassword);
+
+        // UserDto를 User 엔티티로 변환
         User user = requestDto.toEntity();
         userRepository.save(user);
+
         return "가입을 완료하였습니다.";
     }
 
@@ -34,7 +43,7 @@ public class UserService {
         User user = userRepository.findByUserId(requestDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("가입되지 않은 아이디입니다."));
 
-        if (!requestDto.getPassword().equals(user.getPassword())) {
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
         }
 
